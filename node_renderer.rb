@@ -74,7 +74,6 @@ class NodeRenderer
 
     child_names = []
     node.children.each { |child| child_names << child.name }
-    #node.children
     child_names.join(", ")
 
   end

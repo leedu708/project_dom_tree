@@ -11,16 +11,16 @@ class TreeSearcher
 
     # Search for and return a collection with all nodes exactly matching the name, text, id, or class provided
     queue = [@tree.root]
-    crawl_down_tree(queue, field, value)
+    search_init(queue, field, value)
 
   end
 
 
-  def search_children(node, field, value)
+  def search_descendants(node, field, value)
 
     # Search just the tree beginning at a particular node
     queue = [node]
-    crawl_down_tree(queue, field, value)
+    search_init(queue, field, value)
 
   end
 
@@ -28,18 +28,17 @@ class TreeSearcher
   def search_ancestors(node, field, value)
 
     # Search just the direct ancestors of a particular node
-    # Is this supposed to be just like search_children, but
-    # Excluding the starting node?
     queue = []
     node.children.each { |child| queue << child }
-    crawl_down_tree(queue, field, value)
+    search_init(queue, field, value)
 
   end
 
-  def crawl_down_tree(queue, field, value)
+  def search_init(queue, field, value)
 
     output = []
 
+    # crawls down the tree to find nodes that match the search
     until queue.empty?
       check_node = queue.shift
 
@@ -55,6 +54,7 @@ class TreeSearcher
 
   def match?(node, field, value)
 
+    # checks which type of match
     if value.is_a?(Regexp)
       regex_match?(node, field, value)
     else

@@ -34,17 +34,21 @@ Building the DOM Tree:
 
 =end
 
+require_relative 'node_renderer'
+require_relative 'tree_searcher'
+
 # Create Node Struct
 Node = Struct.new(:name, :text, :classes, :id, :children, :parent)
 
 class DOMReader
-  attr_reader :root
+  # consider opening up regex variables for search
+  attr_reader :root, :edge_stack
 
   def initialze(file)
 
     @root = nil
     tree = build_tree(file)
-    render = NodeRender.new(tree)
+    render = NodeRenderer.new(tree)
     search = TreeSearcher.new(tree)
 
   end
@@ -73,7 +77,7 @@ class DOMReader
     # grabs all tags
     tags = string.scan(/(\/?[a-z]+[1-6]*.*?)>(.*?)</m)
 
-    edge_stack = []
+    @edge_stack = []
 
     tags.each do |tag|
       base_node(tag, edge_stack)
@@ -88,6 +92,8 @@ class DOMReader
     # pop top stack item if there is a closing tag
     if tag[0].strip.include?("/")
       stack.pop
+
+      # adds :text to the open tag
       stack.last[:text] << " #{text}" unless text.empty?
 
     # if open tag, assign top item as parent
@@ -100,6 +106,8 @@ class DOMReader
 
       # add new child to parent
       parent[:children] << new_node unless parent.nil?
+
+      # creates root node
       @root = new_node if parent.nil?
 
       # put self on top of stack
@@ -116,9 +124,10 @@ class DOMReader
     name_match = tag.match(/\A(\S+)\s?/)
     output[:name] = name_match[1]
 
+    # if there are no classes/id
     output[:classes], output[:id] = nil, nil
 
-    class_string = tag.match(/class['"](.+?)['"]/)
+    class_string = tag.match(/class=['"](.+?)['"]/)
     output[:classes] = class_string[1].to_s.split(" ") unless class_string.nil?
 
     id_match = tag.match(/id=['"](.+?)['"]/)
@@ -129,3 +138,21 @@ class DOMReader
   end
 
 end
+
+reader = DOMReader.new
+tree = reader.build_tree("test.html")
+
+renderer = NodeRenderer.new(reader)
+# puts renderer.render
+
+searcher = TreeSearcher.new(reader)
+test = searcher.search_by(:class, "inner-div")
+# puts renderer.render(test[0])
+
+descendant_test = searcher.search_descendants(reader.root, :class, "top-div")
+puts renderer.render(descendant_test[0])
+
+
+# 0..(tree.length - 1).times do |index|
+#   print tree[index].to_s + "\n"
+# end
