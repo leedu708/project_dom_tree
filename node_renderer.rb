@@ -32,12 +32,14 @@ class NodeRenderer
     until queue.empty?
       node = queue.shift
 
+      # counts number of each type of tag
       node.children.each do |child|
         types[child.name] ||= 0
         types[child.name] += 1
         queue << child
       end
 
+      # sums total descendants
       total = types.values.inject { |sum, value| sum += value }
 
     end
@@ -48,7 +50,7 @@ class NodeRenderer
 
   def render_attributes(node)
 
-    puts "\nCURRENT NODE"
+    puts "\nCURRENT NODE\n\n"
     puts "\tName: #{node.name}"
     puts "\tText: #{node.text}"
     puts "\tClasses: #{node.classes}"
@@ -62,7 +64,7 @@ class NodeRenderer
 
   end
 
-
+  # properly renders the descendant tags
   def render_descendants(name_counts)
 
     name_counts.each { |key, value| puts "\t<#{key}> = #{value}"}
@@ -70,6 +72,7 @@ class NodeRenderer
 
   end
 
+  # returns names of children
   def get_child_names(node)
 
     child_names = []
@@ -78,9 +81,9 @@ class NodeRenderer
 
   end
 
+  # returns parent name
   def get_parent_name(node)
 
-    parent_name = ""
     parent_name = node.parent.name unless node.parent.nil?
     
   end

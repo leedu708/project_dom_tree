@@ -6,7 +6,7 @@ class TreeSearcher
 
   end
 
-
+  # calls search method starting from root
   def search_by(field, value)
 
     # Search for and return a collection with all nodes exactly matching the name, text, id, or class provided
@@ -15,7 +15,7 @@ class TreeSearcher
 
   end
 
-
+  # calls search method for children
   def search_descendants(node, field, value)
 
     # Search just the tree beginning at a particular node
@@ -24,7 +24,7 @@ class TreeSearcher
 
   end
 
-
+  # calls search method for ancestors
   def search_ancestors(node, field, value)
 
     # Search just the direct ancestors of a particular node
@@ -34,6 +34,7 @@ class TreeSearcher
 
   end
 
+  # primary search method
   def search_init(queue, field, value)
 
     output = []
@@ -51,40 +52,17 @@ class TreeSearcher
 
   end
 
-
+  # checks if there is a match
   def match?(node, field, value)
 
-    # checks which type of match
-    if value.is_a?(Regexp)
-      regex_match?(node, field, value)
-    else
-      value_match?(node, field, value)
-    end
-
-  end
-
-
-  def value_match?(node, field, value)
-
+    # classes saved as arrays, needs separate check
     if field == :class
       node[:classes] ||= []
       node[:classes].include?(value)
+    elsif field == :text
+      node[field].split(" ").include?(value)
     else
       node[field] == value
-    end
-
-  end
-
-
-  def regex_match?(node, field, regex)
-
-    if field == :class
-      node[:classes] ||= []
-      results = node[:classes].grep(regex)
-      !results.empty?
-    else
-      results = node[field].match(regex)
-      !results.nil?
     end
 
   end

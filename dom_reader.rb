@@ -36,6 +36,7 @@ Building the DOM Tree:
 
 require_relative 'node_renderer'
 require_relative 'tree_searcher'
+require 'pry-byebug'
 
 # Create Node Struct
 Node = Struct.new(:name, :text, :classes, :id, :children, :parent)
@@ -75,6 +76,8 @@ class DOMReader
   def build_edges(string)
 
     # grabs all tags
+    # [[h2, text], [em, text], [/em, text], [/h2], [li, blah], [/li]]
+    binding.pry
     tags = string.scan(/(\/?[a-z]+[1-6]*.*?)>(.*?)</m)
 
     @edge_stack = []
@@ -87,13 +90,14 @@ class DOMReader
 
   def base_node(tag, stack)
 
+    # keep track of text
     text = tag[1].strip
 
     # pop top stack item if there is a closing tag
     if tag[0].strip.include?("/")
       stack.pop
 
-      # adds :text to the open tag
+      # adds :text to the parent open tag
       stack.last[:text] << " #{text}" unless text.empty?
 
     # if open tag, assign top item as parent
@@ -102,6 +106,7 @@ class DOMReader
       parent = stack.last
 
       # add parent to new child
+      # add text associated with current open tag
       new_node = Node.new(tag_data[:name], text, tag_data[:classes], tag_data[:id], [], parent)
 
       # add new child to parent
@@ -139,6 +144,7 @@ class DOMReader
 
 end
 
+# load 'dom_reader.rb'
 reader = DOMReader.new
 tree = reader.build_tree("test.html")
 
@@ -146,11 +152,17 @@ renderer = NodeRenderer.new(reader)
 # puts renderer.render
 
 searcher = TreeSearcher.new(reader)
-test = searcher.search_by(:class, "inner-div")
-# puts renderer.render(test[0])
+# text_search = searcher.search_by(:text, "outer")
+# puts renderer.render(text_search[0])
 
-descendant_test = searcher.search_descendants(reader.root, :class, "top-div")
-puts renderer.render(descendant_test[0])
+test = searcher.search_by(:class, "inner-div")
+puts renderer.render(test[0])
+
+# descendant_test = searcher.search_descendants(reader.root, :class, "top-div")
+# puts renderer.render(descendant_test[0])
+
+# ancestor_test = searcher.search_ancestors(descendant_test[0], :name, "body")
+# puts renderer.render(ancestor_test[0])
 
 
 # 0..(tree.length - 1).times do |index|
