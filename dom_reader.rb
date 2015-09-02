@@ -78,6 +78,7 @@ class DOMReader
     # grabs all tags
     # EXAMPLE: [[h2, \ntext], [em, \ntext], [/em, \ntext], [/h2, \n], [li, \nblah], [/li]]
     # text that follows a closed tag is accounted for and saved in :text attribute for the parent tag
+    # adds newline for parsing
     tags = string.scan(/(\/?[a-z]+[1-6]*.*?)>(.*?)</m)
 
     edge_stack = []
@@ -126,6 +127,7 @@ class DOMReader
 
     output = {}
 
+    # must be no spaces next to start of string.  newline added earlier for strings other than the name of the tag
     name_match = tag.match(/\A(\S+)\s?/)
     output[:name] = name_match[1]
 
@@ -145,18 +147,18 @@ class DOMReader
 end
 
 # load 'dom_reader.rb'
-reader = DOMReader.new
-tree = reader.build_tree("test.html")
+# reader = DOMReader.new
+# tree = reader.build_tree("test.html")
 
-renderer = NodeRenderer.new(reader)
-# puts renderer.render
+# renderer = NodeRenderer.new(reader)
+# # puts renderer.render
 
-searcher = TreeSearcher.new(reader)
-# text_search = searcher.search_by(:text, "outer")
-# puts renderer.render(text_search[0])
+# searcher = TreeSearcher.new(reader)
+# # text_search = searcher.search_by(:text, "outer")
+# # puts renderer.render(text_search[0])
 
-test = searcher.search_by(:class, "inner-div")
-puts renderer.render(test[0])
+# test = searcher.search_by(:class, "inner-div")
+# puts renderer.render(test[0])
 
 # descendant_test = searcher.search_descendants(reader.root, :class, "top-div")
 # puts renderer.render(descendant_test[0])
