@@ -59,8 +59,12 @@ class TreeSearcher
     if field == :class
       node[:classes] ||= []
       node[:classes].include?(value)
+
+    # text saved as string.  break the string, check if value is included in the text attribute 
     elsif field == :text
       node[field].split(" ").include?(value)
+
+    # the other attributes are assumed to only have one value
     else
       node[field] == value
     end

@@ -43,7 +43,7 @@ Node = Struct.new(:name, :text, :classes, :id, :children, :parent)
 
 class DOMReader
   # consider opening up regex variables for search
-  attr_reader :root, :edge_stack
+  attr_reader :root
 
   def initialze(file)
 
@@ -77,10 +77,9 @@ class DOMReader
 
     # grabs all tags
     # [[h2, text], [em, text], [/em, text], [/h2], [li, blah], [/li]]
-    binding.pry
     tags = string.scan(/(\/?[a-z]+[1-6]*.*?)>(.*?)</m)
 
-    @edge_stack = []
+    edge_stack = []
 
     tags.each do |tag|
       base_node(tag, edge_stack)
