@@ -53,7 +53,13 @@ class NodeRenderer
     puts "\nCURRENT NODE\n\n"
     puts "\tName: #{node.name}"
     puts "\tText: #{node.text}"
-    puts "\tClasses: #{node.classes}"
+
+    if node.classes.nil?
+      puts "\tClasses:"
+    else
+      puts "\tClasses: #{node.classes.join(", ")}"
+    end
+
     puts "\tID: #{node.id}"
 
     child_names = get_child_names(node)

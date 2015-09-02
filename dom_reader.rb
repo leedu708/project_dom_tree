@@ -76,7 +76,8 @@ class DOMReader
   def build_edges(string)
 
     # grabs all tags
-    # [[h2, text], [em, text], [/em, text], [/h2], [li, blah], [/li]]
+    # EXAMPLE: [[h2, \ntext], [em, \ntext], [/em, \ntext], [/h2, \n], [li, \nblah], [/li]]
+    # text that follows a closed tag is accounted for and saved in :text attribute for the parent tag
     tags = string.scan(/(\/?[a-z]+[1-6]*.*?)>(.*?)</m)
 
     edge_stack = []
