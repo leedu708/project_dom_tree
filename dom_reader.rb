@@ -36,6 +36,7 @@ Building the DOM Tree:
 
 require_relative 'node_renderer'
 require_relative 'tree_searcher'
+require_relative 'dom_builder.rb'
 require 'pry-byebug'
 
 # Create Node Struct
@@ -118,6 +119,7 @@ class DOMReader
 
       # put self on top of stack
       stack << new_node
+
     end
 
   end
@@ -147,8 +149,10 @@ class DOMReader
 end
 
 # load 'dom_reader.rb'
-# reader = DOMReader.new
-# tree = reader.build_tree("test.html")
+reader = DOMReader.new
+tree = reader.build_tree("test.html")
+builder = DOMBuilder.new(reader)
+
 
 # renderer = NodeRenderer.new(reader)
 # # puts renderer.render
